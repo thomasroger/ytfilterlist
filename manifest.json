@@ -1,0 +1,20 @@
+{
+    "name": "YT Filter List",
+    "description": "Filter YouTube home screen content",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions":["storage", "activeTab", "scripting", "tabs"],
+    "content_scripts": [
+        {
+            "matches": ["https://*.youtube.com/"],
+            "js": ["./filterList.js"]
+        }
+    ],
+    "action": {
+        "default_title":"YT Content Filter",
+        "default_icon": "ytfilter.png"
+    },
+    "background": {
+        "service_worker" : "background.js"
+    }
+}
