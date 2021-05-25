@@ -2,7 +2,10 @@ if(window.localStorage.getItem('filterList') === null) {
     window.localStorage.setItem('filterList', JSON.stringify({ content: [] }));
 }
 
+window.localStorage.getItem('filterList').length > 100000 && window.localStorage.clear('filterList')
+
 let filterList = JSON.parse(window.localStorage.getItem("filterList"))
+
 
 if (document.readyState === "complete") {
     window.addEventListener('load', contentHandler)
@@ -41,17 +44,22 @@ function getContentList() {
 
 //loop filter list
 function getFilteredContent() {
-
     let list = getContentList()
     
     // loop over filters array and list array for each item
     return list.then((items) => {
             let filteredContent = {oldContent:[], newContent:[]}          
 
-            items.forEach(listItem => {
-                    filterList['content'].indexOf(listItem['content']) < 0 ? filteredContent['newContent'].push(listItem): filteredContent['oldContent'].push(listItem);
-            })
-            return filteredContent
+            if(filterList['content'] === null) {
+                filteredContent['newContent'] = items
+                return filteredContent
+            } else {
+                items.forEach(listItem => {
+                        filterList['content'].indexOf(listItem['content']) < 0 ? filteredContent['newContent'].push(listItem): filteredContent['oldContent'].push(listItem);
+                })
+                return filteredContent
+            }
+
     })
 
 }
@@ -60,7 +68,7 @@ function contentHandler() {
 
     let filterContent = getFilteredContent();
     
-    filterContent.then((content) => {        
+    filterContent.then((content) => {   
         let oldContent = content['oldContent'].map(item => { return item['content'] })
         let newContent = content['newContent'].map(item => { return item['content'] })
         let contentList = [...filterList['content'], ...newContent]
