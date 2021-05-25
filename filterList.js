@@ -55,6 +55,7 @@ function getFilteredContent() {
                 return filteredContent
             } else {
                 items.forEach(listItem => {
+                        console.log(listItem)
                         filterList['content'].indexOf(listItem['content']) < 0 ? filteredContent['newContent'].push(listItem): filteredContent['oldContent'].push(listItem);
                 })
                 return filteredContent
@@ -73,6 +74,9 @@ function contentHandler() {
         let newContent = content['newContent'].map(item => { return item['content'] })
         let contentList = [...filterList['content'], ...newContent]
 
+        // Remove later
+        console.log(oldContent)
+
         window.localStorage.setItem('filterList', JSON.stringify({ content: contentList }))
 
         console.log(`${filterList['content'].length} items stored`)
@@ -89,11 +93,12 @@ function contentHandler() {
             console.log(`${i+1}.  ${contentItem['content']}`)
 
             setTimeout(() => {
+
                 contentItem['menuBtn'].click()
                 setTimeout(() => {
                     document.querySelectorAll('tp-yt-iron-dropdown yt-formatted-string').forEach(item => item.textContent === "Not interested" && item.click())
-                }, 50)
-            },(i+1)*100)
+                }, 100)
+            },(i+1)*200)
         })
     })
 }
@@ -101,7 +106,6 @@ function contentHandler() {
 chrome.runtime.onMessage.addListener(gotMessage)
 
 function gotMessage(message, sender, sendResponse) {
-
+    console.log(message)
     message.action === "refresh" && contentHandler()
-    
 }
